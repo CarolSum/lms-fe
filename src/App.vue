@@ -2,10 +2,10 @@
   <div id="app">
     <el-container style="height: 100%;">
       <el-header>
-        <top-bar></top-bar>
+        <top-bar @update:isCollapse="changeCollapse"></top-bar>
       </el-header>
       <el-container>
-        <el-aside>
+        <el-aside :width="asideWidth">
           <aside-nav :isCollapse="isCollapse"></aside-nav>
         </el-aside>
         <el-main>
@@ -28,7 +28,18 @@ export default {
   },
   data () {
     return {
-      isCollapse: false
+      isCollapse: false,
+      asideWidth: '300px'
+    }
+  },
+  methods: {
+    changeCollapse () {
+      if(this.isCollapse) {
+        this.asideWidth = '300px';
+      }else {
+        this.asideWidth = '64px';
+      }
+      this.isCollapse = !this.isCollapse;
     }
   }
 }

@@ -4,6 +4,7 @@
       <div class="logo">
         <router-link to="/home">图书管理系统</router-link>
       </div>
+      <span class="aside-control" @click="changeCollapse"><i class="fa fa-bars"></i></span>
       <el-menu-item index="1">
         <i class="el-icon-share"></i>
         <span>分享</span>
@@ -24,7 +25,7 @@ export default {
   },
   methods: {
       changeCollapse () {
-        this.isCollapse = !this.isCollapse;  
+        this.$emit('update:isCollapse');
       }
   }
 }    
@@ -49,8 +50,11 @@ export default {
 .top-bar-menu{
   width: 100%;
 }
-
 .el-menu--horizontal>.el-menu-item{
   float: right;
+}
+.aside-control{
+  margin: 0 10px;
+  font-size: 24px;
 }
 </style>
