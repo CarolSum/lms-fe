@@ -35,9 +35,6 @@
     name:'aside-nav',
     props: {
       isCollapse: Boolean
-    },
-    methods: {
-      
     }
   }
 </script>
