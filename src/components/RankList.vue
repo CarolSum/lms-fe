@@ -52,9 +52,5 @@
 </script>
 
 <style scoped>
-  .rank-list h2{
-    font-size: 20px;
-    font-weight: normal;
-    border-bottom: 1px solid #e6e6e6;
-  }
+
 </style>

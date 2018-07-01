@@ -1,7 +1,7 @@
 <template>
     <div>
       <div style="margin-top: 15px; margin-right: 50px;">
-        <el-input placeholder="请输入内容" v-model="searchKey" class="input-with-select">
+        <el-input placeholder="请输入购买书籍" v-model="searchKey" class="input-with-select">
           <el-select v-model="select" slot="prepend" placeholder="请选择">
             <el-option label="书名" value="1"></el-option>
             <el-option label="分类" value="2"></el-option>
@@ -77,18 +77,7 @@ export default {
 }    
 </script>
 
-<style>
-  .el-select .el-input {
-    width: 130px;
-  }
-  .input-with-select .el-input-group__prepend {
-    background-color: #fff;
-  }
-  .search-result h2{
-    font-size: 20px;
-    font-weight: normal;
-    border-bottom: 1px solid #e6e6e6;
-  }
+<style scoped>
   .cart-control-minus,
   .cart-control-add{
     display: inline-block;

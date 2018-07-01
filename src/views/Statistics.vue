@@ -29,11 +29,6 @@ export default {
 </script>
 
 <style scoped>
-  .total h2{
-    font-size: 20px;
-    font-weight: normal;
-    border-bottom: 1px solid #e6e6e6;
-  }
   .total span{
     padding: 0 10px;
   }

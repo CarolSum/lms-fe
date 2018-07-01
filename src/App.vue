@@ -59,4 +59,15 @@ export default {
   bottom: 0;
   width: 100%;
 }
+.el-select .el-input {
+  width: 130px;
+}
+.input-with-select .el-input-group__prepend {
+  background-color: #fff;
+}
+h2 {
+  font-size: 20px;
+  font-weight: normal;
+  border-bottom: 1px solid #e6e6e6;
+}
 </style>
