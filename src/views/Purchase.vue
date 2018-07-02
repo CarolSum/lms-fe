@@ -39,6 +39,8 @@
 
 <script>
 import {bookInfo, supplierInfo} from '../mock-data/purchaseBookInfo.js';
+import axios from 'axios';
+import api from '../utils/api.js';
 
 export default {
   name: 'purchase',
@@ -63,6 +65,8 @@ export default {
         this.bookInfo = bookInfo;
         this.supplierInfo = supplierInfo;
       }, 500);
+
+      api.get('/book').then(res => console.log(res));
     },
     handleOrderFormOpen (row) {
       this.orderForm.market_id = row.market_id;
