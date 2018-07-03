@@ -34,14 +34,13 @@
 </template>
 
 <script>
-import refundsTable from '../mock-data/refundsTable.js';
 import api from '../utils/api.js';
 
 export default {
   name: 'returns',
   data () {
     return {
-      _metaRefundsTable: refundsTable,
+      _metaRefundsTable: [],
       refundsTable: [],
       addRefundsFormVisible: false,
       addRefundsForm: {
