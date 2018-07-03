@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios from 'axios'
 
 const api = axios.create({
   timeout: 5000,
-  baseURL: '/'
-});
+  baseURL: '/api',
+  withCredentials: true
+})
 
-export default api;
+export default api
