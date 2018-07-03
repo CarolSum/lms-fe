@@ -39,7 +39,6 @@
 
 <script>
 import {bookInfo, supplierInfo} from '../mock-data/purchaseBookInfo.js';
-import axios from 'axios';
 import api from '../utils/api.js';
 
 export default {
@@ -58,32 +57,57 @@ export default {
     }
   },
   methods: {
-    handleSearchPurchaseBook () {
+    async handleSearchPurchaseBook () {
       if(!this.nameOfPurchase) return;
       console.log(`purchase: ${this.nameOfPurchase}`);
-      setTimeout(() => {
-        this.bookInfo = bookInfo;
-        this.supplierInfo = supplierInfo;
-      }, 500);
+      // setTimeout(() => {
+      //   this.bookInfo = bookInfo;
+      //   this.supplierInfo = supplierInfo;
+      // }, 500);
+      await api.get('/book?name='+this.nameOfPurchase).then(res => {
+        console.log(res);
+        this.bookInfo = res.data.data.books;
+        if(this.bookInfo.length === 0) {
+          this.$notify({
+            title: '查询失败',
+            message: '书库中没有相关书籍~'
+          })
+        }
+      });
 
-      api.get('/book').then(res => console.log(res));
+      await api.get('/market?name='+this.nameOfPurchase).then(res => {
+        console.log(res);
+        this.supplierInfo = res.data.data.market;
+      });
     },
     handleOrderFormOpen (row) {
       this.orderForm.market_id = row.market_id;
       this.orderForm.quantity = 0;
       this.orderFormVisible = true;
     },
-    handleOrderFormConfirm () {
+    async handleOrderFormConfirm () {
       if(!this.orderForm.quantity || this.orderForm.quantity == '0'){
         this.orderFormVisible = false;
         return;
       };
       console.log(this.orderForm);
+
+      await api.put('/book', this.orderForm).then(res => {
+        console.log(this.bookInfo);
+        console.log(this.orderForm);
+        this.bookInfo[0].stocks += Number.parseInt(this.orderForm.quantity);
+        this.$notify({
+          title: '成功',
+          message: res.data.msg,
+          type: 'success'
+        });
+      });
+
       // 类型检查?
       this.orderFormVisible = false;
     }
   }
-}    
+}
 </script>
 
 <style>

@@ -2,26 +2,23 @@
     <div>
       <div style="margin-top: 15px; margin-right: 50px;">
         <el-input placeholder="请输入购买书籍" v-model="searchKey" class="input-with-select">
-          <el-select v-model="select" slot="prepend" placeholder="请选择">
-            <el-option label="书名" value="1"></el-option>
-            <el-option label="分类" value="2"></el-option>
-            <el-option label="价格" value="3"></el-option>
-          </el-select>
-          <el-button slot="append" icon="el-icon-search" @click="onSearch"></el-button>
+          <template slot="prepend">
+            书名
+          </template>
+          <el-button slot="append" icon="el-icon-search" @click="handleSearch"></el-button>
         </el-input>
       </div>
       <div class="search-result">
         <h2>搜索结果：</h2>
         <el-table :data="searchDataWithCount" style="width: 100%">
-          <el-table-column label="书名" min-width="120" prop="bookName"></el-table-column>
-          <el-table-column label="出版社" min-width="120" prop="press"></el-table-column>
+          <el-table-column label="书名" min-width="120" prop="bookname"></el-table-column>
           <el-table-column label="价格" min-width="50" prop="price"></el-table-column>
-          <el-table-column label="库存" min-width="50" prop="stock"></el-table-column>
+          <el-table-column label="库存" min-width="50" prop="stocks"></el-table-column>
           <el-table-column label="购买数量" min-width="100">
             <template slot-scope="scope">
                <div class="cart-count">
                 <span class="cart-control-minus" @click="handleCount(scope.row, -1)">-</span>
-                {{ scope.row.count }}
+                {{ scope.row.quantity }}
                 <span class="cart-control-add" @click="handleCount(scope.row, 1)">+</span>
               </div>
             </template>
@@ -38,43 +35,70 @@
 
 <script>
 import _searchData from '../mock-data/saleSearchData.js';
+import api from '../utils/api.js';
 
 export default {
   name: 'sales',
   data () {
     return {
       searchKey: '',
-      select: '',
       searchData: []
     }
   },
   computed: {
     searchDataWithCount () {
       return this.searchData.map(item => {
-        return Object.assign({}, item, { count: 1});
+        return Object.assign({}, item, { quantity: 1});
       })
     }
   },
   methods: {
-    onSearch () {
-      if(!this.select || !this.searchKey) return;
+    async handleSearch () {
+      if(!this.searchKey) return;
       console.log(`search ${this.searchKey}`);
-      setTimeout(() => {
-        this.searchData = _searchData;
-      }, 500);
+
+      await api.get('/book?name='+this.searchKey).then(res => {
+        console.log(res);
+        if(res.data.data.books.length === 0) {
+          this.$notify({
+            title: '查询失败',
+            message: '书库中没有相关书籍~',
+            type: 'info'
+          })
+        }else {
+          this.searchData = res.data.data.books;
+        }
+      });
+
     },
-    handlePurchase (index, row) {
-      console.log(index);
-      console.log(row);
-      row.stock -= row.count;
+    async handlePurchase (index, row) {
+      if(row.quantity <= 0) return;
+      const arr = [];
+      arr.push(row);
+      await api.post('/book/sale', {
+        sales: arr
+      }).then(res => {
+        console.log(res);
+        this.$notify({
+          type: 'success',
+          message: '成功售出书籍~',
+          title: '操作成功'
+        })
+        row.stocks -= row.quantity;
+      })
     },
     handleCount (row, num) {
-      if(row.count === 1 && num === -1) return;
-      row.count += num;
-      console.log(row.count);
+      if(row.quantity === 1 && num === -1) return;
+      row.quantity += num;
+      console.log(row.quantity);
     }
+  },
+  mounted () {
+    api.get('/book').then(res => {
+      this.searchData = res.data.data.books;
+    });
   }
-}    
+}
 </script>
 
 <style scoped>

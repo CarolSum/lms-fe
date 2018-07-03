@@ -59,8 +59,8 @@ export default {
   bottom: 0;
   width: 100%;
 }
-.el-select .el-input {
-  width: 130px;
+.el-select, .el-input {
+  width: 100%;
 }
 .input-with-select .el-input-group__prepend {
   background-color: #fff;

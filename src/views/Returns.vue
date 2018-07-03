@@ -35,11 +35,13 @@
 
 <script>
 import refundsTable from '../mock-data/refundsTable.js';
+import api from '../utils/api.js';
 
 export default {
   name: 'returns',
   data () {
     return {
+      _metaRefundsTable: refundsTable,
       refundsTable: [],
       addRefundsFormVisible: false,
       addRefundsForm: {
@@ -48,20 +50,20 @@ export default {
       }
     }
   },
-  computed: {
-    _metaRefundsTable () {
-      return refundsTable;
-    }
-  },
   methods: {
     handleDelete (index, row) {
       this.refundsTable.splice(index, 1);
     },
     addRefunds () {
       this.addRefundsFormVisible = true;
-      console.log(refundsTable);
+      console.log(this.refundsTable);
     },
     handleFormConfirm () {
+      console.log(this.addRefundsForm.quantity);
+      if(this.addRefundsForm.quantity <= 0){
+        this.$message.error('退货数量应大于0~请重新输入~');
+        return;
+      }
       // find book name
       let bookname = '';
       this._metaRefundsTable.forEach(item => {
@@ -72,16 +74,41 @@ export default {
       this.refundsTable.push(Object.assign({}, this.addRefundsForm, { bookname: bookname}));
       this.addRefundsFormVisible = false;
     },
-    handleRefundsConfirm () {
-      console.log(this.refundsTable);
-      
+    async handleRefundsConfirm () {
+      if(this.refundsTable.length === 0) {
+        this.$notify({
+          title: '发生错误',
+          type: 'warning',
+          message: '请添加退货书籍条目~'
+        });
+        return;
+      }
+      await api.post('/book/refund', {
+        refunds: this.refundsTable
+      }).then(res => {
+        console.log(res);
+      })
+      this.$notify({
+        title: '成功',
+        message: '退货成功',
+        type: 'success'
+      })
+      this.refundsTable.splice(0, this.refundsTable.length);
     }
+  },
+  async mounted () {
+    await api.get('/book').then(res => {
+      console.log(res);
+      this._metaRefundsTable = res.data.data.books;
+    });
   }
-}    
+}
 </script>
 
 <style scoped>
 .btn-group{
   margin: 10px 0px;
 }
+
+
 </style>
